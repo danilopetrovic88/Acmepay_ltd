@@ -1,20 +1,22 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
-using Acmepay_ltd.Models;
 using Acmepay_ltd.Services;
 using Acmepay_ltd.helper;
 using System.Text.Json;
 using Azure.Messaging;
+using Acmepay_ltd.Domain.Models;
+using Acmepay_ltd.Application.Transactions.Create;
+using MediatR;
 
-namespace Acmepay_ltd.Endpoints;
+namespace Acmepay_ltd.Presentation.Endpoints;
 
 public static class TransactionEndpoints
 {
     public static void MapTransactionEndpoints(this IEndpointRouteBuilder builder)
     {
-        // get all transactions
+        get all transactions
         builder.MapGet("api/authorize", async (SqlConnectionFactory sqlConnectionFactory) =>
-        { 
+        {
             using var connection = sqlConnectionFactory.Create();
 
             const string sql = "SELECT Amount, Currency, CardHolderNumber, HolderName, Id, Status FROM Transactions";
@@ -27,12 +29,12 @@ public static class TransactionEndpoints
             {
                 var transactionDetails = new
                 {
-                    Amount = transaction.Amount,
-                    Currency = transaction.Currency,
+                    transaction.Amount,
+                    transaction.Currency,
                     CardHolderNumber = ReplaceCharsWithAsterisks.Replace(transaction.CardHolderNumber),
-                    HolderName = transaction.HolderName,
-                    Id = transaction.Id,
-                    Status = transaction.Status,
+                    transaction.HolderName,
+                    transaction.Id,
+                    transaction.Status,
                 };
 
                 response.Add(transactionDetails);
@@ -41,7 +43,7 @@ public static class TransactionEndpoints
             return Results.Ok(response);
         });
 
-        // authorize
+        //authorize
         builder.MapPost("api/authorize", async (Transaction transaction, SqlConnectionFactory sqlConnectionFactory) =>
         {
             using var connection = sqlConnectionFactory.Create();
@@ -55,14 +57,14 @@ public static class TransactionEndpoints
 
             var response = new
             {
-                Id = transaction.Id,
-                Status = transaction.Status
+                transaction.Id,
+                transaction.Status
             };
 
             return Results.Ok(response);
         });
 
-        // Voids
+        //Voids
         builder.MapPost("api/authorize/{id}/voids", async (SqlConnectionFactory sqlConnectionFactory, string id, TransactionRequest request) =>
         {
             using var connection = sqlConnectionFactory.Create();
@@ -90,14 +92,14 @@ public static class TransactionEndpoints
 
             var response = new
             {
-                Id = selectedTransaction.Id,
-                Status = selectedTransaction.Status
+                selectedTransaction.Id,
+                selectedTransaction.Status
             };
 
             return Results.Ok(response);
         });
 
-        // Capture
+        //Capture
         builder.MapPost("api/authorize/{id}/capture", async (SqlConnectionFactory sqlConnectionFactory, string id, TransactionRequest request) =>
         {
             using var connection = sqlConnectionFactory.Create();
@@ -125,8 +127,8 @@ public static class TransactionEndpoints
 
             var response = new
             {
-                Id = selectedTransaction.Id,
-                Status = selectedTransaction.Status
+                selectedTransaction.Id,
+                selectedTransaction.Status
             };
 
             return Results.Ok(response);

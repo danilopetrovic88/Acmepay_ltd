@@ -1,10 +1,10 @@
-﻿namespace Acmepay_ltd.Models
+﻿namespace Acmepay_ltd.Domain.Models
 {
     public class Transaction
     {
         public Transaction()
         {
-            Id = Guid.NewGuid();
+            Status = TransactionStatus.Authorized.ToString();
         }
 
         public Guid Id { get; set; }
@@ -20,16 +20,3 @@
     }
 }
 
-
-
-//{
-//    "amount": 999.99,
-//  "currency": "RSD",
-//  "cardHolderNumber": "123456789123456789",
-//  "holderName": "Danilo Petrovic",
-//  "expirationMonth": 12,
-//  "expirationYear": 2025,
-//  "cvv": 123456,
-//  "orderReference": "asdfasdf",
-//  "status" : "authorized";
-//}

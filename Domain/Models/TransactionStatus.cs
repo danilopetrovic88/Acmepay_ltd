@@ -1,4 +1,4 @@
-﻿namespace Acmepay_ltd.Models
+﻿namespace Acmepay_ltd.Domain.Models
 {
     public enum TransactionStatus
     {
